@@ -1,0 +1,175 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f4f8f5;
+  color: #24332b;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+/* Header */
+
+.header {
+  background-color: white;
+  padding: 20px 40px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #dce8df;
+}
+
+.logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #176b4d;
+}
+
+.tagline {
+  color: #6c7d74;
+  margin: 4px 0 0;
+}
+
+/* Main content */
+
+.container {
+  max-width: 1100px;
+  margin: auto;
+  padding: 30px;
+}
+
+.welcome {
+  margin-bottom: 25px;
+}
+
+.welcome h1 {
+  margin-bottom: 5px;
+}
+
+/* Cards */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #dce8df;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.05);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.card-value {
+  font-size: 25px;
+  font-weight: bold;
+  color: #176b4d;
+}
+
+/* Check-in */
+
+.section {
+  background-color: white;
+  padding: 25px;
+  border-radius: 15px;
+  margin-bottom: 25px;
+  border: 1px solid #dce8df;
+}
+
+.section h2 {
+  margin-top: 0;
+  color: #176b4d;
+}
+
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: bold;
+}
+
+input[type="range"] {
+  width: 100%;
+}
+
+input[type="number"],
+input[type="text"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #cbd8d0;
+  border-radius: 8px;
+  font-size: 15px;
+}
+
+/* Button */
+
+button {
+  background-color: #176b4d;
+  color: white;
+  border: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+button:hover {
+  background-color: #12553d;
+}
+
+/* Pattern */
+
+.pattern {
+  background-color: #edf7f0;
+  border-left: 5px solid #176b4d;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.footer {
+  text-align: center;
+  padding: 25px;
+  color: #718078;
+}
+
+/* Mobile */
+
+@media (max-width: 800px) {
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 500px) {
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .header {
+    padding: 15px 20px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+}
