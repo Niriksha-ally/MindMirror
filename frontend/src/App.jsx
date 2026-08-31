@@ -1,6 +1,30 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+} from "chart.js";
+
+import { Line } from "react-chartjs-2";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+);
+
+
 // =====================================================
 // HOME PAGE
 // =====================================================
@@ -8,6 +32,8 @@ import "./App.css";
 function Home({ setPage }) {
   return (
     <main className="container home-page">
+
+      {/* HERO */}
 
       <section className="hero">
 
@@ -37,6 +63,7 @@ function Home({ setPage }) {
           </button>
 
         </div>
+
 
         <div className="hero-card">
 
@@ -88,7 +115,7 @@ function Home({ setPage }) {
 
           <p>
             Find simple patterns in your
-            personal data.
+            personal wellbeing data.
           </p>
 
         </div>
@@ -130,8 +157,220 @@ function Dashboard({
   checkIns,
   setPage
 }) {
+
+  // GRAPH DATA
+
+  const chartData = {
+    labels: checkIns.map((checkIn, index) =>
+      checkIn.createdAt
+        ? new Date(checkIn.createdAt).toLocaleDateString()
+        : `Day ${index + 1}`
+    ),
+
+    datasets: [
+
+      {
+        label: "Mood",
+        data: checkIns.map((checkIn) =>
+          Number(checkIn.mood)
+        ),
+
+        borderColor: "#e5b900",
+        backgroundColor: "#e5b900",
+
+        tension: 0.3,
+        borderWidth: 3,
+
+        pointRadius: 5,
+        pointHoverRadius: 8,
+
+        yAxisID: "wellbeing"
+      },
+
+
+      {
+        label: "Stress",
+        data: checkIns.map((checkIn) =>
+          Number(checkIn.stress)
+        ),
+
+        borderColor: "#ef4444",
+        backgroundColor: "#ef4444",
+
+        tension: 0.3,
+        borderWidth: 3,
+
+        pointRadius: 5,
+        pointHoverRadius: 8,
+
+        yAxisID: "wellbeing"
+      },
+
+
+      {
+        label: "Energy",
+        data: checkIns.map((checkIn) =>
+          Number(checkIn.energy)
+        ),
+
+        borderColor: "#20a866",
+        backgroundColor: "#20a866",
+
+        tension: 0.3,
+        borderWidth: 3,
+
+        pointRadius: 5,
+        pointHoverRadius: 8,
+
+        yAxisID: "wellbeing"
+      },
+
+
+      {
+        label: "Sleep",
+        data: checkIns.map((checkIn) =>
+          Number(checkIn.sleep)
+        ),
+
+        borderColor: "#3198dc",
+        backgroundColor: "#3198dc",
+
+        tension: 0.3,
+        borderWidth: 3,
+
+        pointRadius: 5,
+        pointHoverRadius: 8,
+
+        yAxisID: "sleep"
+      }
+
+    ]
+  };
+
+
+  // GRAPH OPTIONS
+
+  const chartOptions = {
+
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    interaction: {
+      mode: "index",
+      intersect: false
+    },
+
+    plugins: {
+
+      legend: {
+        position: "top",
+
+        labels: {
+          font: {
+            size: 14
+          },
+
+          padding: 20
+        }
+      },
+
+      tooltip: {
+        padding: 12,
+
+        titleFont: {
+          size: 14
+        },
+
+        bodyFont: {
+          size: 14
+        }
+      }
+    },
+
+    scales: {
+
+      x: {
+        ticks: {
+          font: {
+            size: 12
+          }
+        },
+
+        grid: {
+          color: "#e8eee9"
+        }
+      },
+
+
+      wellbeing: {
+
+        type: "linear",
+
+        position: "left",
+
+        min: 0,
+
+        max: 10,
+
+        title: {
+          display: true,
+          text: "Mood / Stress / Energy",
+          font: {
+            size: 13
+          }
+        },
+
+        ticks: {
+          font: {
+            size: 12
+          }
+        },
+
+        grid: {
+          color: "#e8eee9"
+        }
+      },
+
+
+      sleep: {
+
+        type: "linear",
+
+        position: "right",
+
+        min: 0,
+
+        max: 12,
+
+        title: {
+          display: true,
+          text: "Sleep (hours)",
+          font: {
+            size: 13
+          }
+        },
+
+        ticks: {
+          font: {
+            size: 12
+          }
+        },
+
+        grid: {
+          drawOnChartArea: false
+        }
+      }
+
+    }
+  };
+
+
   return (
+
     <main className="container">
+
+      {/* PAGE TITLE */}
 
       <div className="page-title">
 
@@ -169,7 +408,7 @@ function Dashboard({
           </p>
 
           <span>
-            Today's level
+            Happiness & positivity
           </span>
 
         </div>
@@ -190,7 +429,7 @@ function Dashboard({
           </p>
 
           <span>
-            Today's level
+            Pressure & tension
           </span>
 
         </div>
@@ -211,7 +450,7 @@ function Dashboard({
           </p>
 
           <span>
-            Today's level
+            Vitality & activity
           </span>
 
         </div>
@@ -232,7 +471,7 @@ function Dashboard({
           </p>
 
           <span>
-            Today's sleep
+            Rest & relaxation
           </span>
 
         </div>
@@ -251,26 +490,62 @@ function Dashboard({
         <div className="average-grid">
 
           <div>
-            <span>Mood</span>
+            <span>🙂 Mood</span>
             <strong>{summary.mood}/10</strong>
           </div>
 
           <div>
-            <span>Stress</span>
+            <span>😟 Stress</span>
             <strong>{summary.stress}/10</strong>
           </div>
 
           <div>
-            <span>Energy</span>
+            <span>⚡ Energy</span>
             <strong>{summary.energy}/10</strong>
           </div>
 
           <div>
-            <span>Sleep</span>
+            <span>🌙 Sleep</span>
             <strong>{summary.sleep} hrs</strong>
           </div>
 
         </div>
+
+      </section>
+
+
+      {/* WELLBEING GRAPH */}
+
+      <section className="dashboard-section graph-section">
+
+        <h2>
+          📈 Wellbeing Trends
+        </h2>
+
+        <p className="section-description">
+          See how your mood, stress, energy and sleep
+          change over time.
+        </p>
+
+
+        {checkIns.length < 2 ? (
+
+          <p className="empty">
+            Add at least two check-ins to see your wellbeing graph.
+          </p>
+
+        ) : (
+
+          <div className="chart-container">
+
+            <Line
+              data={chartData}
+              options={chartOptions}
+            />
+
+          </div>
+
+        )}
 
       </section>
 
@@ -341,7 +616,9 @@ function CheckIn({
   setGoal,
   saveCheckIn
 }) {
+
   return (
+
     <main className="container">
 
       <div className="page-title">
@@ -370,11 +647,15 @@ function CheckIn({
           <div className="slider-group">
 
             <label>
-              <span>🙂 Mood</span>
+
+              <span>
+                🙂 Mood
+              </span>
 
               <strong>
                 {mood}/10
               </strong>
+
             </label>
 
             <input
@@ -395,11 +676,15 @@ function CheckIn({
           <div className="slider-group">
 
             <label>
-              <span>😟 Stress</span>
+
+              <span>
+                😟 Stress
+              </span>
 
               <strong>
                 {stress}/10
               </strong>
+
             </label>
 
             <input
@@ -420,11 +705,15 @@ function CheckIn({
           <div className="slider-group">
 
             <label>
-              <span>⚡ Energy</span>
+
+              <span>
+                ⚡ Energy
+              </span>
 
               <strong>
                 {energy}/10
               </strong>
+
             </label>
 
             <input
@@ -508,7 +797,9 @@ function Diary({
   diaryEntries,
   saveDiary
 }) {
+
   return (
+
     <main className="container">
 
       <div className="page-title">
@@ -527,8 +818,6 @@ function Diary({
 
       </div>
 
-
-      {/* NEW ENTRY */}
 
       <section className="diary-box">
 
@@ -558,14 +847,11 @@ function Diary({
       </section>
 
 
-      {/* PREVIOUS ENTRIES */}
-
       <section className="dashboard-section">
 
         <h2>
           📔 Previous Entries
         </h2>
-
 
         {diaryEntries.length === 0 ? (
 
@@ -615,7 +901,9 @@ function History({
   checkIns,
   pattern
 }) {
+
   return (
+
     <main className="container">
 
       <div className="page-title">
@@ -654,47 +942,67 @@ function History({
             >
 
               <div>
-                <span>Mood</span>
+
+                <span>
+                  Mood
+                </span>
 
                 <strong>
                   🙂 {checkIn.mood}/10
                 </strong>
+
               </div>
 
 
               <div>
-                <span>Stress</span>
+
+                <span>
+                  Stress
+                </span>
 
                 <strong>
                   😟 {checkIn.stress}/10
                 </strong>
+
               </div>
 
 
               <div>
-                <span>Energy</span>
+
+                <span>
+                  Energy
+                </span>
 
                 <strong>
                   ⚡ {checkIn.energy}/10
                 </strong>
+
               </div>
 
 
               <div>
-                <span>Sleep</span>
+
+                <span>
+                  Sleep
+                </span>
 
                 <strong>
                   🌙 {checkIn.sleep} hrs
                 </strong>
+
               </div>
 
 
               <div>
-                <span>Goal</span>
+
+                <span>
+                  Goal
+                </span>
 
                 <strong>
                   🎯 {checkIn.goal || "No goal"}
                 </strong>
+
               </div>
 
             </div>
@@ -796,7 +1104,7 @@ function App() {
       calculateSummary(data);
       findPattern(data);
 
-      // Show latest saved check-in
+
       if (data.length > 0) {
 
         const latest = data[data.length - 1];
@@ -1231,7 +1539,6 @@ function App() {
 
     <div className="app">
 
-
       {/* HEADER */}
 
       <header className="header">
@@ -1348,6 +1655,7 @@ function App() {
     </div>
 
   );
+
 }
 
 

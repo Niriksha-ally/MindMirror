@@ -1,13 +1,9 @@
-/* ------------------------------
+/* =====================================================
    GENERAL
------------------------------- */
+===================================================== */
 
 * {
   box-sizing: border-box;
-}
-
-html {
-  scroll-behavior: smooth;
 }
 
 body {
@@ -15,6 +11,7 @@ body {
   font-family: Arial, sans-serif;
   background: #f5f8f6;
   color: #24332b;
+  font-size: 16px;
 }
 
 button,
@@ -32,112 +29,97 @@ button {
 }
 
 
-/* ------------------------------
-   HEADER / NAVIGATION
------------------------------- */
+/* =====================================================
+   HEADER
+===================================================== */
 
 .header {
   background: white;
-
   min-height: 75px;
-
   padding: 0 50px;
 
   display: flex;
-
   justify-content: space-between;
-
   align-items: center;
 
   border-bottom: 1px solid #dce8df;
 
   position: sticky;
-
   top: 0;
-
   z-index: 10;
 }
 
 .logo {
-  font-size: 25px;
-
+  font-size: 26px;
   font-weight: bold;
-
   color: #176b4d;
-
   cursor: pointer;
 
-  transition: transform 0.25s ease;
+  transition: transform 0.2s ease;
 }
 
 .logo:hover {
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
-
 
 nav {
   display: flex;
-
   gap: 8px;
 }
 
 nav button {
   background: transparent;
-
   color: #53645b;
 
   border: none;
 
-  padding: 10px 15px;
+  padding: 11px 16px;
 
-  border-radius: 8px;
+  border-radius: 9px;
 
-  font-size: 14px;
+  font-size: 16px;
 
   transition:
-    transform 0.25s ease,
-    background-color 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 nav button:hover {
   background: #edf7f0;
-
   color: #176b4d;
 
   transform: translateY(-3px) scale(1.04);
 
-  box-shadow: 0 6px 15px rgba(23, 107, 77, 0.12);
+  box-shadow:
+    0 6px 15px rgba(23, 107, 77, 0.12);
 }
 
 nav button.active {
   background: #e5f3ea;
-
   color: #176b4d;
-
   font-weight: bold;
 }
 
 
-/* ------------------------------
+/* =====================================================
    MAIN CONTAINER
------------------------------- */
+===================================================== */
 
 .container {
   max-width: 1150px;
-
   margin: auto;
 
-  padding: 50px 30px;
+  padding: 55px 30px;
 }
 
 
-/* ------------------------------
-   HOME PAGE
------------------------------- */
+/* =====================================================
+   HOME
+===================================================== */
 
 .home-page {
-  padding-bottom: 40px;
+  padding-bottom: 50px;
 }
 
 .hero {
@@ -161,17 +143,17 @@ nav button.active {
 .small-title {
   color: #176b4d;
 
-  font-size: 13px;
+  font-size: 14px;
 
   font-weight: bold;
 
-  letter-spacing: 1.5px;
+  letter-spacing: 1.7px;
 
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
 .hero h1 {
-  font-size: 55px;
+  font-size: 58px;
 
   line-height: 1.1;
 
@@ -181,7 +163,7 @@ nav button.active {
 }
 
 .hero-description {
-  font-size: 18px;
+  font-size: 19px;
 
   line-height: 1.7;
 
@@ -189,13 +171,13 @@ nav button.active {
 
   max-width: 580px;
 
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 
-/* ------------------------------
-   MAIN BUTTON
------------------------------- */
+/* =====================================================
+   BUTTON
+===================================================== */
 
 .main-button {
   background: #176b4d;
@@ -204,20 +186,18 @@ nav button.active {
 
   border: none;
 
-  padding: 14px 24px;
+  padding: 15px 25px;
 
   border-radius: 10px;
 
-  font-size: 16px;
+  font-size: 17px;
 
   font-weight: bold;
 
-  cursor: pointer;
-
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background-color 0.25s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
 }
 
 .main-button:hover {
@@ -226,7 +206,7 @@ nav button.active {
   transform: translateY(-4px) scale(1.04);
 
   box-shadow:
-    0 10px 25px rgba(23, 107, 77, 0.25);
+    0 10px 22px rgba(23, 107, 77, 0.25);
 }
 
 .main-button:active {
@@ -234,9 +214,9 @@ nav button.active {
 }
 
 
-/* ------------------------------
+/* =====================================================
    HERO CARD
------------------------------- */
+===================================================== */
 
 .hero-card {
   background: white;
@@ -253,12 +233,12 @@ nav button.active {
   text-align: center;
 
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .hero-card:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-8px);
 
   box-shadow:
     0 18px 35px rgba(23, 107, 77, 0.15);
@@ -266,7 +246,6 @@ nav button.active {
 
 .hero-icon {
   width: 80px;
-
   height: 80px;
 
   background: #e8f5ec;
@@ -276,36 +255,32 @@ nav button.active {
   display: flex;
 
   align-items: center;
-
   justify-content: center;
 
   font-size: 40px;
 
   margin: 0 auto 20px;
-
-  transition: transform 0.3s ease;
-}
-
-.hero-card:hover .hero-icon {
-  transform: scale(1.12) rotate(3deg);
 }
 
 .hero-card h2 {
   color: #176b4d;
 
   margin-bottom: 15px;
+
+  font-size: 25px;
 }
 
 .hero-card p {
   color: #6b7a72;
 
   line-height: 1.8;
+
+  font-size: 16px;
 }
 
 
 /* =====================================================
    TRACK / DISCOVER / REFLECT
-   THIS IS THE POPPING EFFECT
 ===================================================== */
 
 .features {
@@ -315,101 +290,75 @@ nav button.active {
 
   gap: 25px;
 
-  margin-top: 35px;
+  margin-top: 10px;
 }
-
 
 .feature {
   background: white;
 
-  padding: 40px 30px;
+  padding: 35px 30px;
 
-  min-height: 260px;
-
-  border-radius: 20px;
+  border-radius: 18px;
 
   border: 1px solid #dce8df;
 
   text-align: center;
 
-  box-shadow:
-    0 5px 15px rgba(0, 0, 0, 0.04);
-
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease,
-    border-color 0.3s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
-
-
-/* CARD POP */
 
 .feature:hover {
-  transform:
-    translateY(-10px)
-    scale(1.03);
+  transform: translateY(-10px) scale(1.02);
 
   box-shadow:
-    0 18px 35px rgba(23, 107, 77, 0.16);
-
-  border-color: #b8d9c5;
+    0 15px 30px rgba(23, 107, 77, 0.15);
 }
-
-
-/* ICON */
 
 .feature span {
   display: block;
 
-  font-size: 42px;
+  font-size: 40px;
 
-  margin-bottom: 18px;
+  margin-bottom: 15px;
 
-  transition:
-    transform 0.3s ease;
+  transition: transform 0.25s ease;
 }
-
-
-/* ICON POP */
 
 .feature:hover span {
-  transform:
-    scale(1.18)
-    translateY(-4px);
+  transform: scale(1.15);
 }
-
 
 .feature h3 {
   color: #176b4d;
 
-  font-size: 24px;
+  margin: 0 0 10px;
 
-  margin: 0 0 12px;
+  font-size: 22px;
 }
 
 .feature p {
   color: #718078;
 
-  font-size: 17px;
-
   line-height: 1.6;
 
-  margin: 0;
+  font-size: 16px;
 }
 
 
-/* ------------------------------
+/* =====================================================
    PAGE TITLES
------------------------------- */
+===================================================== */
 
 .page-title {
-  margin-bottom: 35px;
+  margin-bottom: 40px;
 }
 
 .page-title h1 {
-  font-size: 38px;
+  font-size: 42px;
 
-  margin: 5px 0 10px;
+  margin: 5px 0 12px;
 
   color: #18382b;
 }
@@ -417,28 +366,28 @@ nav button.active {
 .page-title p:not(.small-title) {
   color: #718078;
 
-  font-size: 16px;
+  font-size: 17px;
 }
 
 
-/* ------------------------------
+/* =====================================================
    DASHBOARD CARDS
------------------------------- */
+===================================================== */
 
 .cards {
   display: grid;
 
   grid-template-columns: repeat(4, 1fr);
 
-  gap: 18px;
+  gap: 22px;
 
-  margin-bottom: 25px;
+  margin-bottom: 30px;
 }
 
 .card {
   background: white;
 
-  padding: 25px;
+  padding: 30px;
 
   border-radius: 18px;
 
@@ -448,35 +397,35 @@ nav button.active {
     0 5px 15px rgba(0, 0, 0, 0.03);
 
   transition:
-    transform 0.3s ease,
-    box-shadow 0.3s ease;
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
 .card:hover {
-  transform:
-    translateY(-7px)
-    scale(1.02);
+  transform: translateY(-8px) scale(1.02);
 
   box-shadow:
     0 15px 30px rgba(23, 107, 77, 0.12);
 }
 
 .card-icon {
-  font-size: 28px;
+  font-size: 32px;
 
-  margin-bottom: 12px;
+  margin-bottom: 15px;
 }
 
 .card h3 {
   margin: 0 0 10px;
 
   color: #43564c;
+
+  font-size: 21px;
 }
 
 .card-value {
-  margin: 0 0 5px;
+  margin: 0 0 8px;
 
-  font-size: 30px;
+  font-size: 32px;
 
   font-weight: bold;
 
@@ -484,54 +433,47 @@ nav button.active {
 }
 
 .card span {
-  color: #8a968f;
+  color: #7b8881;
 
-  font-size: 13px;
+  font-size: 14px;
 }
 
 
-/* ------------------------------
+/* =====================================================
    DASHBOARD SECTIONS
------------------------------- */
+===================================================== */
 
 .dashboard-section {
   background: white;
 
-  padding: 30px;
+  padding: 32px;
 
   border-radius: 18px;
 
   border: 1px solid #dce8df;
 
-  margin-bottom: 25px;
-
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
-}
-
-.dashboard-section:hover {
-  box-shadow:
-    0 10px 25px rgba(0, 0, 0, 0.05);
+  margin-bottom: 28px;
 }
 
 .dashboard-section h2 {
   margin-top: 0;
 
   color: #176b4d;
+
+  font-size: 27px;
 }
 
 
-/* ------------------------------
-   AVERAGE
------------------------------- */
+/* =====================================================
+   AVERAGES
+===================================================== */
 
 .average-grid {
   display: grid;
 
   grid-template-columns: repeat(4, 1fr);
 
-  gap: 15px;
+  gap: 18px;
 }
 
 .average-grid div {
@@ -547,12 +489,18 @@ nav button.active {
 
   align-items: center;
 
+  font-size: 16px;
+
   transition:
-    transform 0.25s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .average-grid div:hover {
   transform: translateY(-4px);
+
+  box-shadow:
+    0 8px 18px rgba(23, 107, 77, 0.08);
 }
 
 .average-grid span {
@@ -562,13 +510,42 @@ nav button.active {
 .average-grid strong {
   color: #176b4d;
 
-  font-size: 20px;
+  font-size: 21px;
 }
 
 
-/* ------------------------------
+/* =====================================================
+   GRAPH
+===================================================== */
+
+.graph-section {
+  overflow: hidden;
+}
+
+.section-description {
+  color: #718078;
+
+  font-size: 16px;
+
+  margin-top: -8px;
+
+  margin-bottom: 25px;
+}
+
+.chart-container {
+  position: relative;
+
+  width: 100%;
+
+  height: 430px;
+
+  padding: 10px;
+}
+
+
+/* =====================================================
    INSIGHT
------------------------------- */
+===================================================== */
 
 .insight-box {
   background: #edf7f0;
@@ -577,26 +554,28 @@ nav button.active {
 }
 
 .insight-box p {
-  font-size: 17px;
+  font-size: 18px;
 
-  line-height: 1.6;
+  line-height: 1.7;
 }
 
 .insight-box small {
   color: #718078;
+
+  font-size: 14px;
 }
 
 
-/* ------------------------------
+/* =====================================================
    CHECK-IN
------------------------------- */
+===================================================== */
 
 .checkin-box {
   background: white;
 
   max-width: 750px;
 
-  padding: 35px;
+  padding: 38px;
 
   border-radius: 20px;
 
@@ -607,7 +586,7 @@ nav button.active {
 }
 
 .slider-group {
-  margin-bottom: 30px;
+  margin-bottom: 32px;
 }
 
 .slider-group label {
@@ -615,11 +594,13 @@ nav button.active {
 
   justify-content: space-between;
 
-  margin-bottom: 12px;
+  margin-bottom: 13px;
 
   font-weight: bold;
 
   color: #3d5047;
+
+  font-size: 17px;
 }
 
 .slider-group strong {
@@ -631,11 +612,11 @@ input[type="range"] {
 
   accent-color: #176b4d;
 
-  cursor: pointer;
+  height: 6px;
 }
 
 .input-group {
-  margin-bottom: 25px;
+  margin-bottom: 26px;
 }
 
 .input-group label {
@@ -646,25 +627,23 @@ input[type="range"] {
   font-weight: bold;
 
   color: #3d5047;
+
+  font-size: 17px;
 }
 
 input[type="number"],
 input[type="text"] {
   width: 100%;
 
-  padding: 13px;
+  padding: 14px;
 
   border: 1px solid #ccd9d1;
 
   border-radius: 9px;
 
-  font-size: 15px;
+  font-size: 16px;
 
   outline: none;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
 input[type="number"]:focus,
@@ -676,31 +655,29 @@ input[type="text"]:focus {
 }
 
 
-/* ------------------------------
+/* =====================================================
    DIARY
------------------------------- */
+===================================================== */
 
 .diary-box {
   background: white;
 
-  padding: 35px;
+  padding: 38px;
 
   border-radius: 20px;
 
   border: 1px solid #dce8df;
 
-  margin-bottom: 25px;
-
-  box-shadow:
-    0 5px 20px rgba(0, 0, 0, 0.04);
+  margin-bottom: 28px;
 }
 
 .diary-box h2 {
   margin-top: 0;
 
   color: #176b4d;
-}
 
+  font-size: 27px;
+}
 
 textarea {
   width: 100%;
@@ -715,21 +692,11 @@ textarea {
 
   border-radius: 12px;
 
-  font-size: 16px;
+  font-size: 17px;
 
   outline: none;
 
   margin-bottom: 18px;
-
-  line-height: 1.6;
-
-  color: #24332b;
-
-  background: white;
-
-  transition:
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
 }
 
 textarea:focus {
@@ -738,7 +705,6 @@ textarea:focus {
   box-shadow:
     0 0 0 3px rgba(23, 107, 77, 0.08);
 }
-
 
 .diary-entry {
   background: #f3f8f4;
@@ -750,31 +716,31 @@ textarea:focus {
   margin-top: 15px;
 
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .diary-entry:hover {
   transform: translateY(-4px);
 
   box-shadow:
-    0 8px 20px rgba(23, 107, 77, 0.08);
+    0 8px 18px rgba(23, 107, 77, 0.08);
 }
 
 .diary-entry span {
   color: #176b4d;
 
-  font-size: 13px;
+  font-size: 14px;
 
   font-weight: bold;
 }
 
 .diary-entry p {
-  line-height: 1.6;
+  line-height: 1.7;
 
   color: #4d5d54;
 
-  white-space: pre-wrap;
+  font-size: 16px;
 }
 
 .empty {
@@ -783,12 +749,14 @@ textarea:focus {
   text-align: center;
 
   padding: 30px;
+
+  font-size: 16px;
 }
 
 
-/* ------------------------------
+/* =====================================================
    HISTORY
------------------------------- */
+===================================================== */
 
 .history-card {
   display: grid;
@@ -806,15 +774,15 @@ textarea:focus {
   margin-bottom: 15px;
 
   transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease;
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .history-card:hover {
   transform: translateY(-4px);
 
   box-shadow:
-    0 8px 20px rgba(23, 107, 77, 0.08);
+    0 8px 18px rgba(23, 107, 77, 0.08);
 }
 
 .history-card div {
@@ -822,23 +790,25 @@ textarea:focus {
 
   flex-direction: column;
 
-  gap: 5px;
+  gap: 6px;
 }
 
 .history-card span {
-  font-size: 13px;
+  font-size: 14px;
 
   color: #78867f;
 }
 
 .history-card strong {
   color: #176b4d;
+
+  font-size: 15px;
 }
 
 
-/* ------------------------------
+/* =====================================================
    FOOTER
------------------------------- */
+===================================================== */
 
 .footer {
   background: #18382b;
@@ -847,23 +817,25 @@ textarea:focus {
 
   text-align: center;
 
-  padding: 35px 20px;
+  padding: 38px 20px;
 
   margin-top: 30px;
 }
 
 .footer-logo {
-  font-size: 22px;
+  font-size: 24px;
 
   font-weight: bold;
 
-  margin-bottom: 8px;
+  margin-bottom: 10px;
 }
 
 .footer p {
   margin: 5px;
 
   color: #c8d8cf;
+
+  font-size: 16px;
 }
 
 .footer small {
@@ -872,28 +844,14 @@ textarea:focus {
   margin-top: 15px;
 
   color: #a9bbb1;
+
+  font-size: 13px;
 }
 
 
-/* ------------------------------
-   GENERAL BUTTON EFFECT
------------------------------- */
-
-button {
-  transition:
-    transform 0.25s ease,
-    box-shadow 0.25s ease,
-    background-color 0.25s ease;
-}
-
-button:active {
-  transform: translateY(0) scale(0.98);
-}
-
-
-/* ------------------------------
+/* =====================================================
    MOBILE
------------------------------- */
+===================================================== */
 
 @media (max-width: 900px) {
 
@@ -905,13 +863,11 @@ button:active {
     gap: 15px;
   }
 
-
   nav {
     flex-wrap: wrap;
 
     justify-content: center;
   }
-
 
   .hero {
     grid-template-columns: 1fr;
@@ -921,40 +877,41 @@ button:active {
     text-align: center;
   }
 
-
   .hero-description {
     margin-left: auto;
 
     margin-right: auto;
   }
 
-
   .hero h1 {
-    font-size: 42px;
+    font-size: 45px;
   }
-
 
   .cards {
     grid-template-columns: repeat(2, 1fr);
   }
 
-
   .features {
     grid-template-columns: 1fr;
   }
-
 
   .average-grid {
     grid-template-columns: repeat(2, 1fr);
   }
 
-
   .history-card {
     grid-template-columns: repeat(2, 1fr);
   }
 
+  .chart-container {
+    height: 380px;
+  }
 }
 
+
+/* =====================================================
+   SMALL MOBILE
+===================================================== */
 
 @media (max-width: 550px) {
 
@@ -962,43 +919,39 @@ button:active {
     padding: 30px 18px;
   }
 
-
   .header {
     padding: 15px;
   }
 
-
   nav button {
     padding: 8px 9px;
 
-    font-size: 13px;
+    font-size: 14px;
   }
-
 
   .hero {
     padding: 25px 5px;
   }
 
-
   .hero h1 {
-    font-size: 35px;
+    font-size: 36px;
   }
 
+  .hero-description {
+    font-size: 17px;
+  }
 
   .cards {
     grid-template-columns: 1fr;
   }
 
-
   .average-grid {
     grid-template-columns: 1fr;
   }
 
-
   .history-card {
     grid-template-columns: 1fr;
   }
-
 
   .checkin-box,
   .diary-box,
@@ -1006,9 +959,13 @@ button:active {
     padding: 22px;
   }
 
-
-  .feature {
-    min-height: auto;
+  .page-title h1 {
+    font-size: 34px;
   }
 
+  .chart-container {
+    height: 330px;
+
+    padding: 0;
+  }
 }
