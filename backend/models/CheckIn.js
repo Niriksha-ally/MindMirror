@@ -1,36 +1,52 @@
 const mongoose = require("mongoose");
 
-const checkInSchema = new mongoose.Schema({
-  mood: {
-    type: Number,
-    required: true
-  },
+const checkInSchema = new mongoose.Schema(
+  {
+    mood: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 10,
+    },
 
-  stress: {
-    type: Number,
-    required: true
-  },
+    stress: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 10,
+    },
 
-  energy: {
-    type: Number,
-    required: true
-  },
+    energy: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 10,
+    },
 
-  sleep: {
-    type: Number,
-    required: true
-  },
+    sleep: {
+      type: Number,
+      required: true,
+      min: 0,
+      max: 24,
+    },
 
-  goal: {
-    type: String
-  },
+    goal: {
+      type: String,
+      default: "",
+      trim: true,
+    },
 
-  date: {
-    type: Date,
-    default: Date.now
+    goalCompleted: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
+    timestamps: true,
   }
-});
+);
 
-const CheckIn = mongoose.model("CheckIn", checkInSchema);
-
-module.exports = CheckIn;
+module.exports = mongoose.model(
+  "CheckIn",
+  checkInSchema
+);

@@ -1,42 +1,81 @@
 const express = require("express");
-const Diary = require("../models/Diary");
 
 const router = express.Router();
 
-// POST - Save diary entry
-router.post("/", async (req, res) => {
-  try {
-    const diary = new Diary({
-      text: req.body.text
-    });
+const Diary = require("../models/Diary");
 
-    const savedDiary = await diary.save();
 
-    res.status(201).json(savedDiary);
-  } catch (error) {
-    console.log(error);
+// =====================================================
+// GET DIARY ENTRIES
+// =====================================================
 
-    res.status(500).json({
-      message: "Failed to save diary entry"
-    });
-  }
-});
-
-// GET - Get all diary entries
 router.get("/", async (req, res) => {
-  try {
-    const diaryEntries = await Diary.find().sort({
-      createdAt: -1
-    });
 
-    res.json(diaryEntries);
+  try {
+
+    const entries = await Diary.find()
+      .sort({ createdAt: -1 });
+
+    res.json(entries);
+
   } catch (error) {
-    console.log(error);
+
+    console.error(error);
 
     res.status(500).json({
-      message: "Failed to get diary entries"
+      message: "Failed to get diary entries",
     });
+
   }
+
 });
+
+
+// =====================================================
+// CREATE DIARY ENTRY
+// =====================================================
+
+router.post("/", async (req, res) => {
+
+  try {
+
+    const { text } = req.body;
+
+
+    if (!text || text.trim() === "") {
+
+      return res.status(400).json({
+        message: "Diary text is required",
+      });
+
+    }
+
+
+    const newEntry = new Diary({
+      text: text.trim(),
+    });
+
+
+    const savedEntry =
+      await newEntry.save();
+
+
+    res.status(201).json(
+      savedEntry
+    );
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(400).json({
+      message: "Failed to save diary entry",
+      error: error.message,
+    });
+
+  }
+
+});
+
 
 module.exports = router;

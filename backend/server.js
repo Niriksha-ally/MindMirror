@@ -1,6 +1,6 @@
 const express = require("express");
-const cors = require("cors");
 const mongoose = require("mongoose");
+const cors = require("cors");
 require("dotenv").config();
 
 const checkInRoutes = require("./routes/checkInRoutes");
@@ -8,28 +8,86 @@ const diaryRoutes = require("./routes/diaryRoutes");
 
 const app = express();
 
-app.use(cors());
-app.use(express.json());
 
-app.use("/api/checkins", checkInRoutes);
-app.use("/api/diary", diaryRoutes);
+// =====================================================
+// MIDDLEWARE
+// =====================================================
 
-app.get("/", (req, res) => {
-  res.send("MindMirror backend is running!");
-});
+app.use(
+  cors()
+);
+
+app.use(
+  express.json()
+);
+
+
+// =====================================================
+// DATABASE
+// =====================================================
 
 mongoose
   .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log("MongoDB connected successfully!");
 
-    const PORT = 5000;
+    console.log(
+      "MongoDB connected successfully"
+    );
 
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
   })
   .catch((error) => {
-    console.log("MongoDB connection failed:");
-    console.log(error.message);
+
+    console.error(
+      "MongoDB connection failed:",
+      error.message
+    );
+
   });
+
+
+// =====================================================
+// ROUTES
+// =====================================================
+
+app.use(
+  "/api/checkins",
+  checkInRoutes
+);
+
+app.use(
+  "/api/diary",
+  diaryRoutes
+);
+
+
+// =====================================================
+// HOME ROUTE
+// =====================================================
+
+app.get("/", (req, res) => {
+
+  res.json({
+    message:
+      "MindMirror API is running 🌿",
+  });
+
+});
+
+
+// =====================================================
+// SERVER
+// =====================================================
+
+const PORT =
+  process.env.PORT || 5000;
+
+app.listen(
+  PORT,
+  () => {
+
+    console.log(
+      `MindMirror backend running on port ${PORT}`
+    );
+
+  }
+);

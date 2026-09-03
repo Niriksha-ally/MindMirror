@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./App.css";
 
 import {
@@ -9,7 +9,7 @@ import {
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
 } from "chart.js";
 
 import { Line } from "react-chartjs-2";
@@ -24,16 +24,15 @@ ChartJS.register(
   Legend
 );
 
+const API = "http://localhost:5000/api";
 
 // =====================================================
-// HOME PAGE
+// HOME
 // =====================================================
 
 function Home({ setPage }) {
   return (
     <main className="container home-page">
-
-      {/* HERO */}
 
       <section className="hero">
 
@@ -50,20 +49,30 @@ function Home({ setPage }) {
           </h1>
 
           <p className="hero-description">
-            MindMirror helps you track your mood,
-            stress, energy and sleep and discover
-            patterns in your personal wellbeing.
+            MindMirror helps you track your mood, stress,
+            energy and sleep and understand how your daily
+            habits affect your wellbeing.
           </p>
 
-          <button
-            className="main-button"
-            onClick={() => setPage("checkin")}
-          >
-            Start Today's Check-in →
-          </button>
+          <div className="hero-buttons">
+
+            <button
+              className="main-button"
+              onClick={() => setPage("checkin")}
+            >
+              Start Today's Check-in →
+            </button>
+
+            <button
+              className="secondary-button"
+              onClick={() => setPage("dashboard")}
+            >
+              View Dashboard
+            </button>
+
+          </div>
 
         </div>
-
 
         <div className="hero-card">
 
@@ -76,8 +85,8 @@ function Home({ setPage }) {
           </h2>
 
           <p>
-            Understand your everyday wellbeing
-            through your own personal data.
+            Turn your everyday wellbeing data into
+            simple and meaningful personal insights.
           </p>
 
         </div>
@@ -85,7 +94,7 @@ function Home({ setPage }) {
       </section>
 
 
-      {/* TRACK / DISCOVER / REFLECT */}
+      {/* SIMPLE FEATURES */}
 
       <section className="features">
 
@@ -93,13 +102,11 @@ function Home({ setPage }) {
 
           <span>📊</span>
 
-          <h3>
-            Track
-          </h3>
+          <h3>Track</h3>
 
           <p>
-            Record your daily mood, stress,
-            energy and sleep.
+            Record your mood, stress, energy,
+            sleep and daily goals.
           </p>
 
         </div>
@@ -109,13 +116,11 @@ function Home({ setPage }) {
 
           <span>🔍</span>
 
-          <h3>
-            Discover
-          </h3>
+          <h3>Discover</h3>
 
           <p>
-            Find simple patterns in your
-            personal wellbeing data.
+            See patterns and changes in your
+            personal wellbeing.
           </p>
 
         </div>
@@ -125,13 +130,11 @@ function Home({ setPage }) {
 
           <span>📔</span>
 
-          <h3>
-            Reflect
-          </h3>
+          <h3>Reflect</h3>
 
           <p>
-            Write diary entries and reflect
-            on your everyday experiences.
+            Keep a private diary to understand
+            your thoughts and experiences.
           </p>
 
         </div>
@@ -155,222 +158,27 @@ function Dashboard({
   summary,
   pattern,
   checkIns,
-  setPage
+  setPage,
 }) {
 
-  // GRAPH DATA
+  const streak = calculateStreak(checkIns);
 
-  const chartData = {
-    labels: checkIns.map((checkIn, index) =>
-      checkIn.createdAt
-        ? new Date(checkIn.createdAt).toLocaleDateString()
-        : `Day ${index + 1}`
-    ),
+  const latestGoal =
+    checkIns.length > 0
+      ? checkIns[checkIns.length - 1].goal
+      : "";
 
-    datasets: [
+  const completedGoals = checkIns.filter(
+    (item) => item.goalCompleted
+  ).length;
 
-      {
-        label: "Mood",
-        data: checkIns.map((checkIn) =>
-          Number(checkIn.mood)
-        ),
-
-        borderColor: "#e5b900",
-        backgroundColor: "#e5b900",
-
-        tension: 0.3,
-        borderWidth: 3,
-
-        pointRadius: 5,
-        pointHoverRadius: 8,
-
-        yAxisID: "wellbeing"
-      },
-
-
-      {
-        label: "Stress",
-        data: checkIns.map((checkIn) =>
-          Number(checkIn.stress)
-        ),
-
-        borderColor: "#ef4444",
-        backgroundColor: "#ef4444",
-
-        tension: 0.3,
-        borderWidth: 3,
-
-        pointRadius: 5,
-        pointHoverRadius: 8,
-
-        yAxisID: "wellbeing"
-      },
-
-
-      {
-        label: "Energy",
-        data: checkIns.map((checkIn) =>
-          Number(checkIn.energy)
-        ),
-
-        borderColor: "#20a866",
-        backgroundColor: "#20a866",
-
-        tension: 0.3,
-        borderWidth: 3,
-
-        pointRadius: 5,
-        pointHoverRadius: 8,
-
-        yAxisID: "wellbeing"
-      },
-
-
-      {
-        label: "Sleep",
-        data: checkIns.map((checkIn) =>
-          Number(checkIn.sleep)
-        ),
-
-        borderColor: "#3198dc",
-        backgroundColor: "#3198dc",
-
-        tension: 0.3,
-        borderWidth: 3,
-
-        pointRadius: 5,
-        pointHoverRadius: 8,
-
-        yAxisID: "sleep"
-      }
-
-    ]
-  };
-
-
-  // GRAPH OPTIONS
-
-  const chartOptions = {
-
-    responsive: true,
-
-    maintainAspectRatio: false,
-
-    interaction: {
-      mode: "index",
-      intersect: false
-    },
-
-    plugins: {
-
-      legend: {
-        position: "top",
-
-        labels: {
-          font: {
-            size: 14
-          },
-
-          padding: 20
-        }
-      },
-
-      tooltip: {
-        padding: 12,
-
-        titleFont: {
-          size: 14
-        },
-
-        bodyFont: {
-          size: 14
-        }
-      }
-    },
-
-    scales: {
-
-      x: {
-        ticks: {
-          font: {
-            size: 12
-          }
-        },
-
-        grid: {
-          color: "#e8eee9"
-        }
-      },
-
-
-      wellbeing: {
-
-        type: "linear",
-
-        position: "left",
-
-        min: 0,
-
-        max: 10,
-
-        title: {
-          display: true,
-          text: "Mood / Stress / Energy",
-          font: {
-            size: 13
-          }
-        },
-
-        ticks: {
-          font: {
-            size: 12
-          }
-        },
-
-        grid: {
-          color: "#e8eee9"
-        }
-      },
-
-
-      sleep: {
-
-        type: "linear",
-
-        position: "right",
-
-        min: 0,
-
-        max: 12,
-
-        title: {
-          display: true,
-          text: "Sleep (hours)",
-          font: {
-            size: 13
-          }
-        },
-
-        ticks: {
-          font: {
-            size: 12
-          }
-        },
-
-        grid: {
-          drawOnChartArea: false
-        }
-      }
-
-    }
-  };
-
+  const goalRate =
+    checkIns.length > 0
+      ? Math.round((completedGoals / checkIns.length) * 100)
+      : 0;
 
   return (
-
     <main className="container">
-
-      {/* PAGE TITLE */}
 
       <div className="page-title">
 
@@ -378,12 +186,11 @@ function Dashboard({
           YOUR WELLBEING
         </p>
 
-        <h1>
-          Dashboard
-        </h1>
+        <h1>Dashboard</h1>
 
         <p>
-          A simple overview of your wellbeing data.
+          A simple overview of your wellbeing and
+          personal progress.
         </p>
 
       </div>
@@ -393,119 +200,105 @@ function Dashboard({
 
       <div className="cards">
 
-        <div className="card">
+        <MetricCard
+          icon="🙂"
+          title="Mood"
+          value={`${mood}/10`}
+          text="Today's level"
+        />
 
-          <div className="card-icon">
-            🙂
-          </div>
+        <MetricCard
+          icon="😟"
+          title="Stress"
+          value={`${stress}/10`}
+          text="Today's level"
+        />
 
-          <h3>
-            Mood
-          </h3>
+        <MetricCard
+          icon="⚡"
+          title="Energy"
+          value={`${energy}/10`}
+          text="Today's level"
+        />
 
-          <p className="card-value">
-            {mood}/10
-          </p>
-
-          <span>
-            Happiness & positivity
-          </span>
-
-        </div>
-
-
-        <div className="card">
-
-          <div className="card-icon">
-            😟
-          </div>
-
-          <h3>
-            Stress
-          </h3>
-
-          <p className="card-value">
-            {stress}/10
-          </p>
-
-          <span>
-            Pressure & tension
-          </span>
-
-        </div>
-
-
-        <div className="card">
-
-          <div className="card-icon">
-            ⚡
-          </div>
-
-          <h3>
-            Energy
-          </h3>
-
-          <p className="card-value">
-            {energy}/10
-          </p>
-
-          <span>
-            Vitality & activity
-          </span>
-
-        </div>
-
-
-        <div className="card">
-
-          <div className="card-icon">
-            🌙
-          </div>
-
-          <h3>
-            Sleep
-          </h3>
-
-          <p className="card-value">
-            {sleep} hrs
-          </p>
-
-          <span>
-            Rest & relaxation
-          </span>
-
-        </div>
+        <MetricCard
+          icon="🌙"
+          title="Sleep"
+          value={`${sleep} hrs`}
+          text="Last recorded"
+        />
 
       </div>
+
+
+      {/* QUICK STATS */}
+
+      <section className="quick-stats">
+
+        <div className="quick-stat">
+          <span>🔥</span>
+          <div>
+            <strong>{streak}</strong>
+            <small>Day streak</small>
+          </div>
+        </div>
+
+        <div className="quick-stat">
+          <span>📝</span>
+          <div>
+            <strong>{checkIns.length}</strong>
+            <small>Total check-ins</small>
+          </div>
+        </div>
+
+        <div className="quick-stat">
+          <span>🎯</span>
+          <div>
+            <strong>{goalRate}%</strong>
+            <small>Goals completed</small>
+          </div>
+        </div>
+
+      </section>
 
 
       {/* AVERAGES */}
 
       <section className="dashboard-section">
 
-        <h2>
-          📊 Your Average
-        </h2>
+        <div className="section-heading">
+
+          <div>
+            <p className="section-label">YOUR DATA</p>
+
+            <h2>📊 Personal Averages</h2>
+          </div>
+
+          <span className="data-count">
+            {checkIns.length} entries
+          </span>
+
+        </div>
 
         <div className="average-grid">
 
           <div>
-            <span>🙂 Mood</span>
+            <span>Mood</span>
             <strong>{summary.mood}/10</strong>
           </div>
 
           <div>
-            <span>😟 Stress</span>
+            <span>Stress</span>
             <strong>{summary.stress}/10</strong>
           </div>
 
           <div>
-            <span>⚡ Energy</span>
+            <span>Energy</span>
             <strong>{summary.energy}/10</strong>
           </div>
 
           <div>
-            <span>🌙 Sleep</span>
+            <span>Sleep</span>
             <strong>{summary.sleep} hrs</strong>
           </div>
 
@@ -514,38 +307,37 @@ function Dashboard({
       </section>
 
 
-      {/* WELLBEING GRAPH */}
+      {/* GRAPH */}
 
-      <section className="dashboard-section graph-section">
-
-        <h2>
-          📈 Wellbeing Trends
-        </h2>
-
-        <p className="section-description">
-          See how your mood, stress, energy and sleep
-          change over time.
-        </p>
+      <WellbeingChart checkIns={checkIns} />
 
 
-        {checkIns.length < 2 ? (
+      {/* GOAL */}
 
-          <p className="empty">
-            Add at least two check-ins to see your wellbeing graph.
+      <section className="dashboard-section goal-section">
+
+        <div>
+
+          <p className="section-label">
+            TODAY'S GOAL
           </p>
 
-        ) : (
+          <h2>🎯 {latestGoal || "No goal added yet"}</h2>
 
-          <div className="chart-container">
+          <p>
+            {latestGoal
+              ? "Keep working towards your daily goal."
+              : "Add a goal during your next check-in."}
+          </p>
 
-            <Line
-              data={chartData}
-              options={chartOptions}
-            />
+        </div>
 
-          </div>
-
-        )}
+        <button
+          className="secondary-button"
+          onClick={() => setPage("checkin")}
+        >
+          {latestGoal ? "Update Goal" : "Add Goal"}
+        </button>
 
       </section>
 
@@ -554,45 +346,28 @@ function Dashboard({
 
       <section className="dashboard-section insight-box">
 
-        <h2>
-          🔍 Personal Insight
-        </h2>
+        <p className="section-label">
+          PERSONAL ANALYSIS
+        </p>
 
-        <p>
+        <h2>💡 What MindMirror noticed</h2>
+
+        <p className="big-insight">
           {pattern}
         </p>
 
         <small>
-          This insight is based on your personal
-          data and is not a medical diagnosis.
+          These observations are based only on the
+          information you enter into MindMirror.
+          They are not medical diagnoses.
         </small>
 
       </section>
 
 
-      {/* PROGRESS */}
+      {/* WEEKLY SUMMARY */}
 
-      <section className="dashboard-section">
-
-        <h2>
-          📈 Your Progress
-        </h2>
-
-        <p>
-          You have completed{" "}
-          <strong>{checkIns.length}</strong>{" "}
-          check-in
-          {checkIns.length !== 1 ? "s" : ""}.
-        </p>
-
-        <button
-          className="main-button"
-          onClick={() => setPage("checkin")}
-        >
-          Add New Check-in
-        </button>
-
-      </section>
+      <WeeklySummary checkIns={checkIns} />
 
     </main>
   );
@@ -600,7 +375,305 @@ function Dashboard({
 
 
 // =====================================================
-// CHECK-IN PAGE
+// METRIC CARD
+// =====================================================
+
+function MetricCard({ icon, title, value, text }) {
+  return (
+    <div className="card">
+
+      <div className="card-icon">
+        {icon}
+      </div>
+
+      <h3>{title}</h3>
+
+      <p className="card-value">
+        {value}
+      </p>
+
+      <span>{text}</span>
+
+    </div>
+  );
+}
+
+
+// =====================================================
+// GRAPH
+// =====================================================
+
+function WellbeingChart({ checkIns }) {
+
+  const recent = checkIns.slice(-7);
+
+  const labels = recent.map((item) =>
+    item.createdAt
+      ? new Date(item.createdAt).toLocaleDateString(
+          "en-IN",
+          {
+            day: "numeric",
+            month: "short",
+          }
+        )
+      : "Day"
+  );
+
+  const data = {
+
+    labels,
+
+    datasets: [
+
+      {
+        label: "Mood",
+        data: recent.map((item) => Number(item.mood)),
+        borderColor: "#eab308",
+        backgroundColor: "#eab308",
+        tension: 0.35,
+      },
+
+      {
+        label: "Stress",
+        data: recent.map((item) => Number(item.stress)),
+        borderColor: "#ef4444",
+        backgroundColor: "#ef4444",
+        tension: 0.35,
+      },
+
+      {
+        label: "Energy",
+        data: recent.map((item) => Number(item.energy)),
+        borderColor: "#22c55e",
+        backgroundColor: "#22c55e",
+        tension: 0.35,
+      },
+
+      {
+        label: "Sleep",
+        data: recent.map((item) =>
+          Math.min(Number(item.sleep), 10)
+        ),
+        borderColor: "#3b82f6",
+        backgroundColor: "#3b82f6",
+        tension: 0.35,
+      },
+
+    ],
+  };
+
+
+  const options = {
+
+    responsive: true,
+
+    maintainAspectRatio: false,
+
+    plugins: {
+
+      legend: {
+        position: "bottom",
+      },
+
+      title: {
+        display: false,
+      },
+
+      tooltip: {
+        mode: "index",
+        intersect: false,
+      },
+
+    },
+
+    scales: {
+
+      y: {
+        beginAtZero: true,
+        max: 10,
+
+        title: {
+          display: true,
+          text: "Wellbeing level",
+        },
+      },
+
+      x: {
+        title: {
+          display: true,
+          text: "Recent days",
+        },
+      },
+
+    },
+
+  };
+
+
+  return (
+
+    <section className="dashboard-section">
+
+      <div className="section-heading">
+
+        <div>
+
+          <p className="section-label">
+            LAST 7 ENTRIES
+          </p>
+
+          <h2>📈 Wellbeing Trends</h2>
+
+        </div>
+
+      </div>
+
+
+      {recent.length < 2 ? (
+
+        <div className="chart-empty">
+
+          <div>📈</div>
+
+          <h3>Not enough data yet</h3>
+
+          <p>
+            Add at least two check-ins to see
+            your wellbeing trends.
+          </p>
+
+        </div>
+
+      ) : (
+
+        <div className="chart-container">
+          <Line data={data} options={options} />
+        </div>
+
+      )}
+
+    </section>
+
+  );
+}
+
+
+// =====================================================
+// WEEKLY SUMMARY
+// =====================================================
+
+function WeeklySummary({ checkIns }) {
+
+  const recent = checkIns.slice(-7);
+
+  if (recent.length === 0) {
+    return (
+      <section className="dashboard-section weekly-section">
+
+        <p className="section-label">
+          WEEKLY REFLECTION
+        </p>
+
+        <h2>🌱 Your week</h2>
+
+        <p>
+          Start checking in each day to build
+          your first weekly summary.
+        </p>
+
+      </section>
+    );
+  }
+
+
+  const averageMood =
+    recent.reduce(
+      (sum, item) => sum + Number(item.mood),
+      0
+    ) / recent.length;
+
+
+  const averageStress =
+    recent.reduce(
+      (sum, item) => sum + Number(item.stress),
+      0
+    ) / recent.length;
+
+
+  const averageSleep =
+    recent.reduce(
+      (sum, item) => sum + Number(item.sleep),
+      0
+    ) / recent.length;
+
+
+  let message = "Your week is building up.";
+
+  if (averageMood >= 7 && averageStress <= 4) {
+    message =
+      "Your recent wellbeing looks positive, with good mood and manageable stress.";
+  } else if (averageStress >= 7) {
+    message =
+      "Your recent stress level has been relatively high. Take some time to rest and reflect.";
+  } else if (averageSleep < 6) {
+    message =
+      "Your recent sleep has been lower than 6 hours on average. Notice how this affects your energy and mood.";
+  } else if (averageMood < 5) {
+    message =
+      "Your recent mood has been lower than usual. Your diary may help you understand what has been affecting you.";
+  } else {
+    message =
+      "Your recent wellbeing looks fairly balanced. Keep checking in to understand your patterns over time.";
+  }
+
+
+  return (
+
+    <section className="dashboard-section weekly-section">
+
+      <p className="section-label">
+        LAST 7 CHECK-INS
+      </p>
+
+      <h2>🌱 Weekly Reflection</h2>
+
+      <div className="weekly-grid">
+
+        <div>
+          <span>Average mood</span>
+          <strong>
+            {averageMood.toFixed(1)}/10
+          </strong>
+        </div>
+
+        <div>
+          <span>Average stress</span>
+          <strong>
+            {averageStress.toFixed(1)}/10
+          </strong>
+        </div>
+
+        <div>
+          <span>Average sleep</span>
+          <strong>
+            {averageSleep.toFixed(1)} hrs
+          </strong>
+        </div>
+
+      </div>
+
+      <div className="weekly-message">
+        💬 {message}
+      </div>
+
+    </section>
+
+  );
+}
+
+
+// =====================================================
+// CHECK-IN
 // =====================================================
 
 function CheckIn({
@@ -614,7 +687,9 @@ function CheckIn({
   setSleep,
   goal,
   setGoal,
-  saveCheckIn
+  goalCompleted,
+  setGoalCompleted,
+  saveCheckIn,
 }) {
 
   return (
@@ -627,9 +702,7 @@ function CheckIn({
           DAILY REFLECTION
         </p>
 
-        <h1>
-          Daily Check-in
-        </h1>
+        <h1>Daily Check-in</h1>
 
         <p>
           Take a moment to record how you feel today.
@@ -648,13 +721,9 @@ function CheckIn({
 
             <label>
 
-              <span>
-                🙂 Mood
-              </span>
+              <span>🙂 Mood</span>
 
-              <strong>
-                {mood}/10
-              </strong>
+              <strong>{mood}/10</strong>
 
             </label>
 
@@ -677,13 +746,9 @@ function CheckIn({
 
             <label>
 
-              <span>
-                😟 Stress
-              </span>
+              <span>😟 Stress</span>
 
-              <strong>
-                {stress}/10
-              </strong>
+              <strong>{stress}/10</strong>
 
             </label>
 
@@ -706,13 +771,9 @@ function CheckIn({
 
             <label>
 
-              <span>
-                ⚡ Energy
-              </span>
+              <span>⚡ Energy</span>
 
-              <strong>
-                {energy}/10
-              </strong>
+              <strong>{energy}/10</strong>
 
             </label>
 
@@ -771,8 +832,27 @@ function CheckIn({
           </div>
 
 
+          {/* GOAL COMPLETION */}
+
+          <label className="goal-check">
+
+            <input
+              type="checkbox"
+              checked={goalCompleted}
+              onChange={(event) =>
+                setGoalCompleted(event.target.checked)
+              }
+            />
+
+            <span>
+              I completed today's goal
+            </span>
+
+          </label>
+
+
           <button
-            className="main-button"
+            className="main-button full-button"
             type="submit"
           >
             Save Check-in
@@ -788,15 +868,24 @@ function CheckIn({
 
 
 // =====================================================
-// DIARY PAGE
+// DIARY
 // =====================================================
 
 function Diary({
   diary,
   setDiary,
   diaryEntries,
-  saveDiary
+  saveDiary,
 }) {
+
+  const [search, setSearch] = useState("");
+
+  const filteredEntries = diaryEntries.filter((entry) =>
+    entry.text
+      .toLowerCase()
+      .includes(search.toLowerCase())
+  );
+
 
   return (
 
@@ -808,9 +897,7 @@ function Diary({
           PERSONAL SPACE
         </p>
 
-        <h1>
-          My Diary
-        </h1>
+        <h1>My Diary</h1>
 
         <p>
           Write down your thoughts and experiences.
@@ -821,9 +908,7 @@ function Diary({
 
       <section className="diary-box">
 
-        <h2>
-          ✍️ Today's Entry
-        </h2>
+        <h2>✍️ Today's Entry</h2>
 
         <form onSubmit={saveDiary}>
 
@@ -849,19 +934,44 @@ function Diary({
 
       <section className="dashboard-section">
 
-        <h2>
-          📔 Previous Entries
-        </h2>
+        <div className="section-heading">
 
-        {diaryEntries.length === 0 ? (
+          <div>
+            <p className="section-label">
+              YOUR JOURNAL
+            </p>
+
+            <h2>📔 Previous Entries</h2>
+          </div>
+
+          {diaryEntries.length > 0 && (
+
+            <input
+              className="search-input"
+              type="text"
+              placeholder="Search diary..."
+              value={search}
+              onChange={(event) =>
+                setSearch(event.target.value)
+              }
+            />
+
+          )}
+
+        </div>
+
+
+        {filteredEntries.length === 0 ? (
 
           <p className="empty">
-            No diary entries yet.
+            {diaryEntries.length === 0
+              ? "No diary entries yet."
+              : "No entries match your search."}
           </p>
 
         ) : (
 
-          diaryEntries.map((entry) => (
+          filteredEntries.map((entry) => (
 
             <div
               className="diary-entry"
@@ -872,13 +982,15 @@ function Diary({
                 {entry.createdAt
                   ? new Date(
                       entry.createdAt
-                    ).toLocaleDateString()
+                    ).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })
                   : "Today"}
               </span>
 
-              <p>
-                {entry.text}
-              </p>
+              <p>{entry.text}</p>
 
             </div>
 
@@ -894,13 +1006,10 @@ function Diary({
 
 
 // =====================================================
-// HISTORY PAGE
+// HISTORY
 // =====================================================
 
-function History({
-  checkIns,
-  pattern
-}) {
+function History({ checkIns, pattern }) {
 
   return (
 
@@ -912,9 +1021,7 @@ function History({
           YOUR DATA
         </p>
 
-        <h1>
-          Check-in History
-        </h1>
+        <h1>Check-in History</h1>
 
         <p>
           Look back at your previous wellbeing
@@ -934,80 +1041,84 @@ function History({
 
         ) : (
 
-          checkIns.map((checkIn) => (
+          [...checkIns]
+            .reverse()
+            .map((checkIn) => (
 
-            <div
-              className="history-card"
-              key={checkIn._id}
-            >
+              <div
+                className="history-card"
+                key={checkIn._id}
+              >
 
-              <div>
+                <div>
+                  <span>Date</span>
 
-                <span>
-                  Mood
-                </span>
+                  <strong>
+                    {checkIn.createdAt
+                      ? new Date(
+                          checkIn.createdAt
+                        ).toLocaleDateString("en-IN")
+                      : "Today"}
+                  </strong>
+                </div>
 
-                <strong>
-                  🙂 {checkIn.mood}/10
-                </strong>
+                <div>
+                  <span>Mood</span>
+
+                  <strong>
+                    🙂 {checkIn.mood}/10
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Stress</span>
+
+                  <strong>
+                    😟 {checkIn.stress}/10
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Energy</span>
+
+                  <strong>
+                    ⚡ {checkIn.energy}/10
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Sleep</span>
+
+                  <strong>
+                    🌙 {checkIn.sleep} hrs
+                  </strong>
+                </div>
+
+                <div className="history-goal">
+
+                  <span>Goal</span>
+
+                  <strong>
+                    🎯 {checkIn.goal || "No goal"}
+                  </strong>
+
+                  {checkIn.goal && (
+                    <small className={
+                      checkIn.goalCompleted
+                        ? "goal-done"
+                        : "goal-pending"
+                    }>
+                      {checkIn.goalCompleted
+                        ? "✓ Completed"
+                        : "○ Not completed"}
+                    </small>
+                  )}
+
+                </div>
 
               </div>
 
-
-              <div>
-
-                <span>
-                  Stress
-                </span>
-
-                <strong>
-                  😟 {checkIn.stress}/10
-                </strong>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Energy
-                </span>
-
-                <strong>
-                  ⚡ {checkIn.energy}/10
-                </strong>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Sleep
-                </span>
-
-                <strong>
-                  🌙 {checkIn.sleep} hrs
-                </strong>
-
-              </div>
-
-
-              <div>
-
-                <span>
-                  Goal
-                </span>
-
-                <strong>
-                  🎯 {checkIn.goal || "No goal"}
-                </strong>
-
-              </div>
-
-            </div>
-
-          ))
+            ))
 
         )}
 
@@ -1016,18 +1127,20 @@ function History({
 
       <section className="dashboard-section insight-box">
 
-        <h2>
-          🔍 Personal Pattern
-        </h2>
+        <p className="section-label">
+          PERSONAL PATTERN
+        </p>
 
-        <p>
+        <h2>🔍 What your data shows</h2>
+
+        <p className="big-insight">
           {pattern}
         </p>
 
         <small>
           MindMirror provides personal wellbeing
-          insights and is not a replacement for
-          professional medical care.
+          observations and is not a replacement
+          for professional medical care.
         </small>
 
       </section>
@@ -1038,47 +1151,76 @@ function History({
 
 
 // =====================================================
+// HELPER - STREAK
+// =====================================================
+
+function calculateStreak(checkIns) {
+
+  if (checkIns.length === 0) {
+    return 0;
+  }
+
+  const dates = [
+    ...new Set(
+      checkIns.map((item) =>
+        new Date(item.createdAt || Date.now())
+          .toISOString()
+          .split("T")[0]
+      )
+    ),
+  ].sort().reverse();
+
+
+  let streak = 1;
+
+
+  for (let i = 0; i < dates.length - 1; i++) {
+
+    const current = new Date(dates[i]);
+    const previous = new Date(dates[i + 1]);
+
+    const difference =
+      (current - previous) /
+      (1000 * 60 * 60 * 24);
+
+    if (difference === 1) {
+      streak++;
+    } else {
+      break;
+    }
+
+  }
+
+  return streak;
+}
+
+
+// =====================================================
 // MAIN APP
 // =====================================================
 
 function App() {
 
-  // PAGE
-
   const [page, setPage] = useState("home");
-
-
-  // CHECK-IN VALUES
 
   const [mood, setMood] = useState(5);
   const [stress, setStress] = useState(5);
   const [energy, setEnergy] = useState(5);
   const [sleep, setSleep] = useState(7);
   const [goal, setGoal] = useState("");
-
-
-  // CHECK-IN HISTORY
+  const [goalCompleted, setGoalCompleted] = useState(false);
 
   const [checkIns, setCheckIns] = useState([]);
 
-
-  // DIARY
-
   const [diary, setDiary] = useState("");
   const [diaryEntries, setDiaryEntries] = useState([]);
-
-
-  // SUMMARY
 
   const [summary, setSummary] = useState({
     mood: 0,
     stress: 0,
     energy: 0,
-    sleep: 0
+    sleep: 0,
   });
-
-
-  // PERSONAL PATTERN
 
   const [pattern, setPattern] = useState(
     "Keep adding check-ins to discover your personal patterns."
@@ -1094,7 +1236,7 @@ function App() {
     try {
 
       const response = await fetch(
-        "http://localhost:5000/api/checkins"
+        `${API}/checkins`
       );
 
       const data = await response.json();
@@ -1114,6 +1256,11 @@ function App() {
         setEnergy(Number(latest.energy));
         setSleep(Number(latest.sleep));
 
+        setGoal(latest.goal || "");
+        setGoalCompleted(
+          Boolean(latest.goalCompleted)
+        );
+
       }
 
     } catch (error) {
@@ -1129,7 +1276,7 @@ function App() {
 
 
   // =====================================================
-  // CALCULATE SUMMARY
+  // SUMMARY
   // =====================================================
 
   function calculateSummary(data) {
@@ -1140,7 +1287,7 @@ function App() {
         mood: 0,
         stress: 0,
         energy: 0,
-        sleep: 0
+        sleep: 0,
       });
 
       return;
@@ -1153,12 +1300,12 @@ function App() {
     let totalSleep = 0;
 
 
-    data.forEach((checkIn) => {
+    data.forEach((item) => {
 
-      totalMood += Number(checkIn.mood);
-      totalStress += Number(checkIn.stress);
-      totalEnergy += Number(checkIn.energy);
-      totalSleep += Number(checkIn.sleep);
+      totalMood += Number(item.mood);
+      totalStress += Number(item.stress);
+      totalEnergy += Number(item.energy);
+      totalSleep += Number(item.sleep);
 
     });
 
@@ -1179,7 +1326,7 @@ function App() {
 
       sleep: (
         totalSleep / data.length
-      ).toFixed(1)
+      ).toFixed(1),
 
     });
 
@@ -1187,7 +1334,7 @@ function App() {
 
 
   // =====================================================
-  // FIND PERSONAL PATTERN
+  // PATTERN DETECTION
   // =====================================================
 
   function findPattern(data) {
@@ -1204,17 +1351,39 @@ function App() {
 
 
     let lowSleepHighStress = 0;
+    let lowSleepLowEnergy = 0;
+    let highStressLowMood = 0;
 
 
-    data.forEach((checkIn) => {
+    data.forEach((item) => {
+
+      const itemSleep = Number(item.sleep);
+      const itemStress = Number(item.stress);
+      const itemEnergy = Number(item.energy);
+      const itemMood = Number(item.mood);
+
 
       if (
-        Number(checkIn.sleep) < 6 &&
-        Number(checkIn.stress) >= 7
+        itemSleep < 6 &&
+        itemStress >= 7
       ) {
-
         lowSleepHighStress++;
+      }
 
+
+      if (
+        itemSleep < 6 &&
+        itemEnergy <= 4
+      ) {
+        lowSleepLowEnergy++;
+      }
+
+
+      if (
+        itemStress >= 7 &&
+        itemMood <= 4
+      ) {
+        highStressLowMood++;
       }
 
     });
@@ -1223,13 +1392,31 @@ function App() {
     if (lowSleepHighStress > 0) {
 
       setPattern(
-        "Your stress was higher on some days when your sleep was lower."
+        `On ${lowSleepHighStress} recorded day${
+          lowSleepHighStress > 1 ? "s" : ""
+        }, lower sleep was accompanied by higher stress.`
+      );
+
+    } else if (lowSleepLowEnergy > 0) {
+
+      setPattern(
+        `On ${lowSleepLowEnergy} recorded day${
+          lowSleepLowEnergy > 1 ? "s" : ""
+        }, lower sleep was accompanied by lower energy.`
+      );
+
+    } else if (highStressLowMood > 0) {
+
+      setPattern(
+        `On ${highStressLowMood} recorded day${
+          highStressLowMood > 1 ? "s" : ""
+        }, higher stress was accompanied by lower mood.`
       );
 
     } else {
 
       setPattern(
-        "No clear pattern found yet. Keep adding daily check-ins."
+        "No strong pattern has appeared yet. Keep checking in consistently."
       );
 
     }
@@ -1246,7 +1433,7 @@ function App() {
     try {
 
       const response = await fetch(
-        "http://localhost:5000/api/diary"
+        `${API}/diary`
       );
 
       const data = await response.json();
@@ -1289,14 +1476,13 @@ function App() {
     const checkInData = {
 
       mood: Number(mood),
-
       stress: Number(stress),
-
       energy: Number(energy),
-
       sleep: Number(sleep),
-
-      goal: goal
+      goal: goal.trim(),
+      goalCompleted: goal
+        ? goalCompleted
+        : false,
 
     };
 
@@ -1304,18 +1490,16 @@ function App() {
     try {
 
       const response = await fetch(
-        "http://localhost:5000/api/checkins",
+        `${API}/checkins`,
         {
 
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
 
-          body: JSON.stringify(
-            checkInData
-          )
+          body: JSON.stringify(checkInData),
 
         }
       );
@@ -1324,10 +1508,12 @@ function App() {
       if (response.ok) {
 
         alert(
-          "Check-in saved successfully!"
+          "Check-in saved successfully! 🌿"
         );
 
         setGoal("");
+
+        setGoalCompleted(false);
 
         await getCheckIns();
 
@@ -1377,18 +1563,18 @@ function App() {
     try {
 
       const response = await fetch(
-        "http://localhost:5000/api/diary",
+        `${API}/diary`,
         {
 
           method: "POST",
 
           headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
           },
 
           body: JSON.stringify({
-            text: diary
-          })
+            text: diary.trim(),
+          }),
 
         }
       );
@@ -1397,7 +1583,7 @@ function App() {
       if (response.ok) {
 
         alert(
-          "Diary entry saved!"
+          "Diary entry saved! 📔"
         );
 
         setDiary("");
@@ -1426,7 +1612,7 @@ function App() {
 
 
   // =====================================================
-  // SELECT PAGE
+  // PAGE ROUTING
   // =====================================================
 
   function showPage() {
@@ -1464,24 +1650,19 @@ function App() {
 
       return (
         <CheckIn
-
           mood={mood}
           setMood={setMood}
-
           stress={stress}
           setStress={setStress}
-
           energy={energy}
           setEnergy={setEnergy}
-
           sleep={sleep}
           setSleep={setSleep}
-
           goal={goal}
           setGoal={setGoal}
-
+          goalCompleted={goalCompleted}
+          setGoalCompleted={setGoalCompleted}
           saveCheckIn={saveCheckIn}
-
         />
       );
 
@@ -1492,15 +1673,10 @@ function App() {
 
       return (
         <Diary
-
           diary={diary}
-
           setDiary={setDiary}
-
           diaryEntries={diaryEntries}
-
           saveDiary={saveDiary}
-
         />
       );
 
@@ -1511,11 +1687,8 @@ function App() {
 
       return (
         <History
-
           checkIns={checkIns}
-
           pattern={pattern}
-
         />
       );
 
@@ -1539,8 +1712,6 @@ function App() {
 
     <div className="app">
 
-      {/* HEADER */}
-
       <header className="header">
 
         <div
@@ -1559,9 +1730,7 @@ function App() {
                 ? "active"
                 : ""
             }
-            onClick={() =>
-              setPage("home")
-            }
+            onClick={() => setPage("home")}
           >
             Home
           </button>
@@ -1573,9 +1742,7 @@ function App() {
                 ? "active"
                 : ""
             }
-            onClick={() =>
-              setPage("dashboard")
-            }
+            onClick={() => setPage("dashboard")}
           >
             Dashboard
           </button>
@@ -1587,9 +1754,7 @@ function App() {
                 ? "active"
                 : ""
             }
-            onClick={() =>
-              setPage("checkin")
-            }
+            onClick={() => setPage("checkin")}
           >
             Check-in
           </button>
@@ -1601,9 +1766,7 @@ function App() {
                 ? "active"
                 : ""
             }
-            onClick={() =>
-              setPage("diary")
-            }
+            onClick={() => setPage("diary")}
           >
             Diary
           </button>
@@ -1615,9 +1778,7 @@ function App() {
                 ? "active"
                 : ""
             }
-            onClick={() =>
-              setPage("history")
-            }
+            onClick={() => setPage("history")}
           >
             History
           </button>
@@ -1627,12 +1788,8 @@ function App() {
       </header>
 
 
-      {/* PAGE */}
-
       {showPage()}
 
-
-      {/* FOOTER */}
 
       <footer className="footer">
 
@@ -1655,7 +1812,6 @@ function App() {
     </div>
 
   );
-
 }
 
 

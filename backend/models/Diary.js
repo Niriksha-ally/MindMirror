@@ -4,12 +4,16 @@ const diarySchema = new mongoose.Schema(
   {
     text: {
       type: String,
-      required: true
-    }
+      required: true,
+      trim: true,
+    },
   },
   {
-    timestamps: true
+    timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Diary", diarySchema);
+module.exports = mongoose.model(
+  "Diary",
+  diarySchema
+);
